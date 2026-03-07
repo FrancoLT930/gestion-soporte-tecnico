@@ -1,53 +1,49 @@
 package com.tecnico.soporte.service;
 
 import com.tecnico.soporte.model.Solicitud;
+import com.tecnico.soporte.repository.SolicitudRepository; // Importamos el repositorio
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class SolicitudServiceImpl implements ISolicitudService {
 
-
-    private List<Solicitud> solicitudes = new ArrayList<>();
-    private Long idGenerado = 1L;
+    @Autowired
+    private SolicitudRepository repository; // Inyectamos el repositorio
 
     @Override
     public List<Solicitud> listarTodo() {
-        return solicitudes;
+        return repository.findAll();
     }
 
     @Override
-    public Solicitud buscarPorId(Long id) {
-        return solicitudes.stream()
-                .filter(s -> s.getId().equals(id))
-                .findFirst()
-                .orElse(null);
+    public Solicitud buscarPorId(Integer id) { // Ahora recibe Integer
+        return repository.findById(id).orElse(null);
     }
 
     @Override
     public Solicitud guardar(Solicitud solicitud) {
-        solicitud.setId(idGenerado++);
-        solicitud.setEstado("PENDIENTE");
-        solicitudes.add(solicitud);
-        return solicitud;
+        solicitud.setEstado("PENDIENTE"); // Lógica de negocio inicial
+        return repository.save(solicitud);
     }
 
     @Override
-    public Solicitud actualizar(Long id, Solicitud nueva) {
-        Solicitud existente = buscarPorId(id);
+    public Solicitud actualizar(Integer id, Solicitud nueva) {
+        Solicitud existente = repository.findById(id).orElse(null);
         if (existente != null) {
             existente.setCliente(nueva.getCliente());
             existente.setDescripcion(nueva.getDescripcion());
             existente.setPrioridad(nueva.getPrioridad());
             existente.setEstado(nueva.getEstado());
+            return repository.save(existente);
         }
-        return existente;
+        return null;
     }
 
     @Override
-    public void eliminar(Long id) {
-        solicitudes.removeIf(s -> s.getId().equals(id));
+    public void eliminar(Integer id) { // Ahora recibe Integer
+        repository.deleteById(id);
     }
 }

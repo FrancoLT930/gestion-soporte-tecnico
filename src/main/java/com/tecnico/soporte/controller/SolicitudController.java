@@ -1,8 +1,8 @@
 package com.tecnico.soporte.controller;
 
+import com.tecnico.soporte.dto.SolicitudDTO;
 import com.tecnico.soporte.model.Solicitud;
 import com.tecnico.soporte.service.ISolicitudService;
-import com.tecnico.soporte.dto.SolicitudDTO;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,48 +12,50 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/solicitudes") // URL pal postmanm
+@RequestMapping("/api/solicitudes")
 public class SolicitudController {
 
     @Autowired
     private ISolicitudService solicitudService;
 
-    //LISTAR
     @GetMapping
     public ResponseEntity<List<Solicitud>> listar() {
-        return new ResponseEntity<>(solicitudService.listarTodo(), HttpStatus.OK);
+        return ResponseEntity.ok(solicitudService.listarTodo());
     }
 
-    //BUSCAR POR ID (GET)
     @GetMapping("/{id}")
-    public ResponseEntity<Solicitud> buscar(@PathVariable Long id) {
+    public ResponseEntity<Solicitud> buscar(@PathVariable Integer id) { // Cambiado a Integer
         Solicitud s = solicitudService.buscarPorId(id);
         return (s != null) ? ResponseEntity.ok(s) : ResponseEntity.notFound().build();
     }
 
-    //CREAR NUEVA SOLICITUD (POST)
     @PostMapping
     public ResponseEntity<Solicitud> crear(@Valid @RequestBody SolicitudDTO dto) {
-        // Pasamos los datos del DTO a una nueva Solicitud
-        Solicitud nueva = new Solicitud();
-        nueva.setCliente(dto.getCliente());
-        nueva.setDescripcion(dto.getDescripcion());
-        nueva.setPrioridad(dto.getPrioridad());
+        // Usamos el Builder para convertir el DTO en Model
+        Solicitud nueva = Solicitud.builder()
+                .cliente(dto.getCliente())
+                .descripcion(dto.getDescripcion())
+                .prioridad(dto.getPrioridad())
+                .build();
 
-        Solicitud guardada = solicitudService.guardar(nueva);
-        return new ResponseEntity<>(guardada, HttpStatus.CREATED);
+        return new ResponseEntity<>(solicitudService.guardar(nueva), HttpStatus.CREATED);
     }
 
-    //ACTUALIZAR (PUT)
     @PutMapping("/{id}")
-    public ResponseEntity<Solicitud> actualizar(@PathVariable Long id, @RequestBody Solicitud solicitud) {
-        Solicitud actualizada = solicitudService.actualizar(id, solicitud);
+    public ResponseEntity<Solicitud> actualizar(@PathVariable Integer id, @RequestBody SolicitudDTO dto) {
+        Solicitud nueva = Solicitud.builder()
+                .cliente(dto.getCliente())
+                .descripcion(dto.getDescripcion())
+                .prioridad(dto.getPrioridad())
+                .estado("ACTUALIZADO") // O lo que necesites
+                .build();
+
+        Solicitud actualizada = solicitudService.actualizar(id, nueva);
         return (actualizada != null) ? ResponseEntity.ok(actualizada) : ResponseEntity.notFound().build();
     }
 
-    //ELIMINAR (DELETE)
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminar(@PathVariable Long id) {
+    public ResponseEntity<Void> eliminar(@PathVariable Integer id) { // Cambiado a Integer
         solicitudService.eliminar(id);
         return ResponseEntity.noContent().build();
     }

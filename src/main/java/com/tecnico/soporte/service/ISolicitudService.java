@@ -5,8 +5,8 @@ import java.util.List;
 
 public interface ISolicitudService {
     List<Solicitud> listarTodo();
-    Solicitud buscarPorId(Long id);
+    Solicitud buscarPorId(Integer id);
     Solicitud guardar(Solicitud solicitud);
-    Solicitud actualizar(Long id, Solicitud solicitudActualizada);
-    void eliminar(Long id);
+    Solicitud actualizar(Integer id, Solicitud solicitudActualizada);
+    void eliminar(Integer id);
 }
