@@ -12,9 +12,11 @@ import lombok.NoArgsConstructor;
 public class Solicitud {
 
     private Integer id;
-    private String cliente;
+
+    private Cliente cliente;
+    private Tecnico tecnico;
+
     private String descripcion;
     private String prioridad;
     private String estado;
-    private String tecnicoAsignado;
 }

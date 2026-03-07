@@ -31,26 +31,16 @@ public class SolicitudController {
 
     @PostMapping
     public ResponseEntity<Solicitud> crear(@Valid @RequestBody SolicitudDTO dto) {
-        // Usamos el Builder para convertir el DTO en Model
-        Solicitud nueva = Solicitud.builder()
-                .cliente(dto.getCliente())
-                .descripcion(dto.getDescripcion())
-                .prioridad(dto.getPrioridad())
-                .build();
-
-        return new ResponseEntity<>(solicitudService.guardar(nueva), HttpStatus.CREATED);
+        // Aquí solo pasamos los datos del DTO al Service
+        // El Service se encargará de buscar al Cliente y al Técnico por su ID
+        Solicitud nueva = solicitudService.guardarDesdeDto(dto);
+        return new ResponseEntity<>(nueva, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Solicitud> actualizar(@PathVariable Integer id, @RequestBody SolicitudDTO dto) {
-        Solicitud nueva = Solicitud.builder()
-                .cliente(dto.getCliente())
-                .descripcion(dto.getDescripcion())
-                .prioridad(dto.getPrioridad())
-                .estado("ACTUALIZADO") // O lo que necesites
-                .build();
-
-        Solicitud actualizada = solicitudService.actualizar(id, nueva);
+        // Ahora le pasamos el DTO directo al Service y que él haga la búsqueda
+        Solicitud actualizada = solicitudService.actualizar(id, dto);
         return (actualizada != null) ? ResponseEntity.ok(actualizada) : ResponseEntity.notFound().build();
     }
 
