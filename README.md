@@ -1,25 +1,32 @@
-#Sistema de Gestión de Soporte Técnico
+# Sistema de Gestión de Soporte Técnico
 
-Este proyecto es una **API RESTful** desarrollada con **Spring Boot** para gestionar solicitudes de soporte técnico de manera eficiente, eliminando el desorden de los registros en papel o correos.
+##Descripción
+Aplicación desarrollada en Java con **Spring Boot 3** para la gestión eficiente de solicitudes de soporte técnico, aplicando arquitectura de capas y persistencia en memoria.
 
-## Características
-- **Arquitectura de Capas:** Separación clara entre controladores, servicios, modelos y DTOs.
-- **Validaciones Avanzadas:** Uso de @Valid y anotaciones de Jakarta para asegurar la integridad de los datos.
-- **Persistencia en Memoria:** Simulación de base de datos utilizando colecciones de Java (`List`).
-- **Manejo Global de Errores:** Respuestas JSON personalizadas para errores de validación.
+## Arquitectura
+- **Controladores:** Gestión de rutas y respuestas HTTP.
+- **Servicios:** Lógica de negocio y validaciones.
+- **Repositorios:** Gestión de datos en memoria (ArrayList).
+- **Modelos/DTOs:** Estructura de datos y transferencia de información.
 
-##Tecnologías utilizadas
-* **Java 21**
-* **Spring Boot 3.x**
-* **Maven** (Gestor de dependencias)
-* **Lombok** (Para código limpio)
-* **Postman** (Para pruebas funcionales)
+## Endpoints de la API
 
-## Estructura del Proyecto
-```text
-src/main/java/com/tecnico/soporte/
-├── controller/  # Endpoints de la API
-├── service/     # Lógica de negocio e interfaz
-├── model/       # Entidad de la Solicitud
-├── dto/         # Objetos de transferencia y validación
-└── exception/   # Manejo centralizado de excepciones
+### Solicitudes (`/api/solicitudes`)
+- `GET /api/solicitudes`: Listar todas las solicitudes.
+- `GET /api/solicitudes/{id}`: Buscar solicitud por ID.
+- `POST /api/solicitudes`: Crear solicitud (Requiere `clienteId` y `tecnicoId`).
+- `PUT /api/solicitudes/{id}`: Actualizar solicitud.
+- `DELETE /api/solicitudes/{id}`: Eliminar solicitud.
+
+### Clientes (`/api/clientes`)
+- `GET /api/clientes`: Listar clientes.
+- `POST /api/clientes`: Registrar nuevo cliente.
+
+### Técnicos (`/api/tecnicos`)
+- `GET /api/tecnicos`: Listar técnicos.
+- `POST /api/tecnicos`: Registrar nuevo técnico.
+
+## Pruebas con Postman
+1. Crear un **Cliente** primero.
+2. Crear un **Técnico**.
+3. Crear la **Solicitud** enviando los IDs correspondientes.
