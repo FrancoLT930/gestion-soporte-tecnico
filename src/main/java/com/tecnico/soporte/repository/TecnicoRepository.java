@@ -6,15 +6,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+// repositorio encargado de los técnicos
 @Repository
 public class TecnicoRepository {
+
+    // guarda a todos los técnicos registrados
     private final List<Tecnico> tecnicos = new ArrayList<>();
+
+    // Contador para asignar IDs automáticos
     private Integer idActual = 1;
 
+    // Devuelve la lista completa de técnicos
     public List<Tecnico> findAll() {
         return tecnicos;
     }
 
+    // Guarda un técnico: si no tiene ID, le asigna el siguiente número y lo mete a la lista
     public Tecnico save(Tecnico tecnico) {
         if (tecnico.getId() == null) {
             tecnico.setId(idActual++);
@@ -23,6 +30,7 @@ public class TecnicoRepository {
         return tecnico;
     }
 
+    // Busca un técnico específico por su ID usando Streams para filtrar rápido
     public Optional<Tecnico> findById(Integer id) {
         return tecnicos.stream()
                 .filter(t -> t.getId().equals(id))

@@ -8,20 +8,24 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+// Lombok nos ahorra escribir Getters, Setters y Constructores
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class SolicitudDTO {
 
+    // Validamos que sí o sí nos manden el número de ID del cliente
     @NotNull(message = "El ID del cliente es obligatorio")
-    private Integer clienteId; // Cambiamos String por el ID
+    private Integer clienteId;
 
-    private Integer tecnicoId; // Nuevo: ID del técnico que atenderá
+    private Integer tecnicoId;
 
+    // No permitimos que la descripción llegue vacía o con puros espacios
     @NotBlank(message = "La descripción no puede estar vacía")
     private String descripcion;
 
+    // Obligamos a que pongan si es prioridad ALTA, MEDIA o BAJA
     @NotBlank(message = "Debe asignar una prioridad")
     private String prioridad;
 }
