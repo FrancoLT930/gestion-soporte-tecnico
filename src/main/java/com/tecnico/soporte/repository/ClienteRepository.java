@@ -5,35 +5,38 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
-// Esta anotación le dice a Spring que esta clase maneja los datos
 @Repository
 public class ClienteRepository {
 
-    // Nuestra "Base de Datos" es simplemente esta lista de Java en memoria
+    // Nuestra lista donde guardamos a los clientes
     private final List<Cliente> clientes = new ArrayList<>();
 
-    // Un contador para que cada cliente tenga un ID diferente (1, 2, 3...)
-    private Integer idActual = 1;
+    // Este es el generador de números. Empieza en 1 y nadie puede usar el mismo número.
+    private final AtomicInteger idActual = new AtomicInteger(1);
 
-    // Metodo para devolver todos los clientes que hemos guardado
+    // Metodo para ver a todos los clientes
     public List<Cliente> findAll() {
         return clientes;
     }
 
-    // Metodo para guardar: si el cliente no tiene ID, le asignamos uno y lo metemos a la lista
+    // Metodo para guardar un cliente
     public Cliente save(Cliente cliente) {
+        // Si el cliente no tiene ID (es nuevo)...
         if (cliente.getId() == null) {
-            cliente.setId(idActual++);
+            // Le pedimos un numero nuevo a la máquina (getAndIncrement) y se lo ponemos
+            cliente.setId(idActual.getAndIncrement());
+            // Lo metemos a la lista
             clientes.add(cliente);
         }
         return cliente;
     }
 
-    // Buscamos un cliente por su ID. Usamos Optional por si no lo encontramos (evita errores)
+    // Metodo para buscar a un cliente por su número de ID
     public Optional<Cliente> findById(Integer id) {
         return clientes.stream()
-                .filter(c -> c.getId().equals(id))
-                .findFirst();
+                .filter(c -> c.getId().equals(id)) // Filtramos por ID
+                .findFirst(); // Devuelve el primero que encuentre
     }
 }

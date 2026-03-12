@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger; // Necesario para el contador seguro
 
 @Repository
 public class SolicitudRepository {
@@ -12,15 +13,15 @@ public class SolicitudRepository {
     // Nuestra lista principal donde se guardan todos los tickets
     private final List<Solicitud> solicitudes = new ArrayList<>();
 
-    // Contador para que cada ticket tenga un número único (ID)
-    private Integer idActual = 1;
+    // Contador con atomic para que los tickets no repitan ID aunque se creen al mismo tiempo
+    private final AtomicInteger idActual = new AtomicInteger(1);
 
     // Devuelve todos los tickets que hemos creado hasta ahora
     public List<Solicitud> findAll() {
         return solicitudes;
     }
 
-    // Busca un ticket específico filtrando por su ID
+    // Busca un ticket específico por su ID
     public Optional<Solicitud> findById(Integer id) {
         return solicitudes.stream().filter(s -> s.getId().equals(id)).findFirst();
     }
@@ -28,8 +29,8 @@ public class SolicitudRepository {
     // Metodo para guardar: sirve tanto para CREAR como para ACTUALIZAR
     public Solicitud save(Solicitud solicitud) {
         if (solicitud.getId() == null) {
-            // Si no tiene ID, es nuevo: le asignamos uno y lo metemos a la lista
-            solicitud.setId(idActual++);
+            // Si no tiene ID, es nuevo: le pedimos el siguiente número a la máquina y lo metemos a la lista
+            solicitud.setId(idActual.getAndIncrement());
             solicitudes.add(solicitud);
         } else {
             // Si ya tiene ID, es una actualización: buscamos su posición y lo reemplazamos
