@@ -26,4 +26,16 @@ public class GlobalExceptionHandler {
         // Devolvemos la lista de errores con un código 400 (Bad Request)
         return new ResponseEntity<>(errores, HttpStatus.BAD_REQUEST);
     }
+
+    // Atrapamos el RuntimeException que lanzamos en el Service cuando el ID no existe
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<Map<String, String>> manejarErroresDeNegocio(RuntimeException ex) {
+        Map<String, String> error = new HashMap<>();
+
+        // Tomamos el mensaje que pusimos en el .orElseThrow(...) del Service
+        error.put("error_negocio", ex.getMessage());
+
+        // Devolvemos 404 para indicar que el recurso (Cliente o Técnico) no fue encontrado
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
 }
