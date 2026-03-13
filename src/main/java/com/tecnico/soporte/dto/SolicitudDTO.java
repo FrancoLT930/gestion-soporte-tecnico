@@ -28,4 +28,6 @@ public class SolicitudDTO {
     // Obligamos a que pongan si es prioridad ALTA, MEDIA o BAJA
     @NotBlank(message = "Debe asignar una prioridad")
     private String prioridad;
+
+    private String estado;
 }

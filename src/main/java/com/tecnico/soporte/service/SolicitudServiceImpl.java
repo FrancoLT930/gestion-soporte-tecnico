@@ -87,6 +87,9 @@ public class SolicitudServiceImpl implements ISolicitudService {
             existente.setDescripcion(dto.getDescripcion());
             existente.setPrioridad(dto.getPrioridad());
 
+            // Actualizamos el estado para poder pasar a "FINALIZADO" o "EN PROCESO"
+            existente.setEstado(dto.getEstado());
+
             return repository.save(existente);
         }
         return null;
